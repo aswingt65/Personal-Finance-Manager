@@ -10,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/transactions")
@@ -43,10 +45,15 @@ public class TransactionController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id, Authentication auth) {
+    public ResponseEntity<Map<String, Object>> delete(@PathVariable Long id, Authentication auth) {
         User user = userRepository.findByEmail(auth.getName()).orElseThrow();
-        transactionService.deleteTransaction(id, user);
-        return ResponseEntity.noContent().build();
+        TransactionResponse deletedTransaction = transactionService.deleteTransaction(id, user);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Transaction deleted successfully");
+        response.put("transaction", deletedTransaction);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/balance")

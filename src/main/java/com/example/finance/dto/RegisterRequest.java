@@ -8,7 +8,7 @@ public class RegisterRequest {
 
     @NotBlank(message = "Name is required")
     @Pattern(
-            regexp = "^[A-Z][a-z]+\\s[A-Z][a-z]+(\\s[A-Z][a-z]+)*$",
+            regexp = "^\\S+\\s+\\S+.*$",
             message = "Enter full name (e.g., John Doe)"
     )
     private String name;

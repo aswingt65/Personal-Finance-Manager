@@ -5,7 +5,8 @@ import org.springframework.http.*;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
-import java.util.Map;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -15,19 +16,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new LinkedHashMap<>();
-
-        // Add "message" first to control order
         errors.put("message", "User registration failed");
 
         ex.getBindingResult().getFieldErrors().forEach(error -> {
-            // Only add if not already present (avoid duplicate keys from multiple annotations)
             errors.putIfAbsent(error.getField(), error.getDefaultMessage());
         });
 
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
-    // Optional: handle other validation exceptions
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Map<String, String>> handleConstraintViolation(ConstraintViolationException ex) {
         Map<String, String> errors = new HashMap<>();
@@ -47,12 +44,18 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.BAD_REQUEST, "Invalid request", ex.getMessage());
     }
 
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<Object> handleResponseStatus(ResponseStatusException ex, WebRequest request) {
+        HttpStatusCode status = ex.getStatusCode();
+        return buildResponse(status, status.toString(), ex.getReason());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAll(Exception ex, WebRequest request) {
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error", ex.getMessage());
     }
 
-    private ResponseEntity<Object> buildResponse(HttpStatus status, String error, String message) {
+    private ResponseEntity<Object> buildResponse(HttpStatusCode status, String error, String message) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("message", message);
         body.put("timestamp", LocalDateTime.now());

@@ -7,7 +7,8 @@ import com.example.finance.model.User;
 import com.example.finance.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,21 +37,30 @@ public class TransactionService {
 
     public TransactionResponse updateTransaction(Long id, TransactionRequest request, User user) {
         Transaction txn = transactionRepository.findById(id)
-                .filter(t -> t.getUser().equals(user))
-                .orElseThrow();
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Transaction not found"));
+
+        if (!txn.getUser().equals(user)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not authorized to update this transaction");
+        }
 
         txn.setAmount(request.amount());
         txn.setDescription(request.description());
         txn.setCategory(request.category());
         txn.setDate(request.date());
+
         return mapToResponse(transactionRepository.save(txn));
     }
 
-    public void deleteTransaction(Long id, User user) {
+    public TransactionResponse deleteTransaction(Long id, User user) {
         Transaction txn = transactionRepository.findById(id)
-                .filter(t -> t.getUser().equals(user))
-                .orElseThrow();
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Transaction not found"));
+
+        if (!txn.getUser().equals(user)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not authorized to delete this transaction");
+        }
+
         transactionRepository.delete(txn);
+        return mapToResponse(txn);
     }
 
     public Double calculateBalance(User user) {
