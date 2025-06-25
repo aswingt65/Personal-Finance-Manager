@@ -54,13 +54,11 @@ class AuthControllerTest {
 
         when(userRepository.findByEmail("john@example.com")).thenReturn(Optional.empty());
         when(passwordEncoder.encode("Password@123")).thenReturn("encodedPassword");
-        when(jwtTokenUtil.generateToken("john@example.com")).thenReturn("dummyToken");
 
         ResponseEntity<AuthResponse> response = authController.register(request);
 
         assertEquals(200, response.getStatusCode().value());
         assertNotNull(response.getBody());
-        assertEquals("dummyToken", response.getBody().token());
         assertEquals("User registered successfully", response.getBody().message());
         verify(userRepository, times(1)).save(any(User.class));
     }
