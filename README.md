@@ -72,9 +72,9 @@ mvn spring-boot:run
 
 - At first, access to anyone’s deletion of transactions was allowable for the user.  A logic that checks if a person has authenticated before allowing access to a particular resource took some time. Adding proper checks in the service layer fixed this.
 
-- I noticed some faults that were returning a response of 500 (Internal Server Error) while they were supposed to rely on 403 (Forbidden) or 404 (Not Found). To fix this issue, I created a custom exception handler annotated with @RestControllerAdvice to send the expected HTTP response code.
+- I noticed some faults that were returning a response of 500 (Internal Server Error) while they were supposed to rely on 403 (Forbidden) or 404 (Not Found). To fix this issue, I created a custom exception handler annotated with @RestControllerAdvice in the GlobalException to send the expected HTTP response code.
 
-- I found writing tests of JUnit 5 and Mockito difficult but easy to do. At the first, I couldn't figure out how to mock services and repositories. After trying it out for a while and after inspecting the sample test case, I was confident to test service logic.
+- I found writing tests of JUnit 5 and Mockito difficult. At the first, I couldn't figure out how to mock services and repositories. After trying it out for a while and after inspecting the sample test case, I have succeeded in writing the test for my project.
 
 - Learning Project Structure: Figuring out how to arrange a Spring Boot app (controllers, services, repositories etc.) took a while. As I learnt better practices, I kept refactoring the code and improved the quality.
 
