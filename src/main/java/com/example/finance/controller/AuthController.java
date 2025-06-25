@@ -35,11 +35,15 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new AuthResponse(null, "Email already in use"));
         }
 
-        User newUser = new User(request.getName(), request.getEmail(), passwordEncoder.encode(request.getPassword()));
+        User newUser = new User(
+                request.getName(),
+                request.getEmail(),
+                passwordEncoder.encode(request.getPassword())
+        );
+
         userRepository.save(newUser);
 
-        String token = jwtTokenUtil.generateToken(newUser.getEmail());
-        return ResponseEntity.ok(new AuthResponse(token, "User registered successfully"));
+        return ResponseEntity.ok(new AuthResponse(null, "User registered successfully"));
     }
 
     // === Login ===
