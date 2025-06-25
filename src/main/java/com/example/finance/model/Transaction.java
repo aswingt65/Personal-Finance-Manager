@@ -18,7 +18,7 @@ public class Transaction {
     private String description;
 
     @Column(nullable = false)
-    private String category; // Example: "Income" or "Expense"
+    private String category;
 
     @Column(nullable = false)
     private LocalDate date;
@@ -27,7 +27,6 @@ public class Transaction {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    // Constructors
     public Transaction() {}
 
     public Transaction(BigDecimal amount, String description, String category, LocalDate date, User user) {
@@ -38,7 +37,6 @@ public class Transaction {
         this.user = user;
     }
 
-    // Getters & Setters
     public Long getId() {
         return id;
     }
