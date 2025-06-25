@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "users") // "user" is a reserved keyword in many DBs
+@Table(name = "users") 
 public class User {
 
     @Id
@@ -16,12 +16,11 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
-    private String password; // Encrypted using BCrypt
+    private String password; 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transaction> transactions;
 
-    // Constructors
     public User() {}
 
     public User(String username, String email, String password) {
@@ -30,7 +29,6 @@ public class User {
         this.password = password;
     }
 
-    // Getters & Setters
     public Long getId() {
         return id;
     }
