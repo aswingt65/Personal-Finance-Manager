@@ -9,7 +9,7 @@ public class RegisterRequest {
     @NotBlank(message = "Name is required")
     @Pattern(
             regexp = "^[A-Za-z]+( [A-Za-z]+)+$",
-            message = "Enter full name (e.g., John Doe)"
+            message = "Enter full name"
     )
     private String name;
 
